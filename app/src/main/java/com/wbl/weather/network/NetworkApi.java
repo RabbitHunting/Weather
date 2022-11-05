@@ -159,6 +159,10 @@ public class NetworkApi {
                 //必应
                 BASE_URL = "https://cn.bing.com";
                 break;
+            case 1:
+                //城市名转城市id
+                BASE_URL="https://geoapi.qweather.com/";
+                break;
             default:break;
         }
     }

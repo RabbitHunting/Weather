@@ -1,7 +1,9 @@
 package com.wbl.weather.viewmodels;
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
 
-public class WeatherViewModel extends ViewModel {
+public class WeatherViewModel extends BaseViewModel {
     // TODO: Implement the ViewModel
+
+
 }

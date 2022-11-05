@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.qweather.sdk.view.HeConfig;
 import com.wbl.weather.BaseApplication;
 import com.wbl.weather.utils.PermissionUtils;
 
@@ -39,7 +40,8 @@ public class BaseActivity extends AppCompatActivity {
         this.context = this;
         BaseApplication.getActivityManager().addActivity(this);
         PermissionUtils.getInstance();
-
+        HeConfig.init("HE2211021543471533", "fe29bde9a4af40658e0c237afe51dd99");
+        HeConfig.switchToBizService();
     }
 
     protected void showMsg(CharSequence msg) {

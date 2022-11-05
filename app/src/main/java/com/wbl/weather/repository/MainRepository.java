@@ -35,7 +35,7 @@ public class MainRepository {
         MVUtils.put(Constant.IS_TODAY_REQUEST, true);
         //记录此次请求的时间的最晚有效时间
         MVUtils.put(Constant.REQUEST_TIMESTAMP, DateUtil.getMillisNextEarlyMorning());
-        BiYingResponse.ImagesBean bean = biYingResponse.getImages().get((0));
+        BiYingResponse.ImagesBean bean = biYingResponse.getImages().get(0);
         Completable insert = BaseApplication.getDb().imageDao().insertAll(new Image(1, bean.getUrl(),
                 bean.getUrlbase(), bean.getCopyright(), bean.getCopyrightlink(), bean.getTitle()));
         //RxJava处理Room数据存储

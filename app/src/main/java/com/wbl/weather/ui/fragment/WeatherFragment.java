@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -27,6 +26,10 @@ import com.amap.api.services.district.DistrictItem;
 import com.amap.api.services.district.DistrictResult;
 import com.amap.api.services.district.DistrictSearch;
 import com.amap.api.services.district.DistrictSearchQuery;
+import com.google.gson.Gson;
+import com.qweather.sdk.bean.base.Code;
+import com.qweather.sdk.bean.geo.GeoBean;
+import com.qweather.sdk.view.QWeather;
 import com.wbl.weather.R;
 import com.wbl.weather.databinding.WeatherFragmentBinding;
 import com.wbl.weather.ui.adapter.CityAdapter;
@@ -99,8 +102,6 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         binding.dwCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 //开启定位
                 mLocationClient.startLocation();
             }
@@ -224,6 +225,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                     //开始进行地址转城市代码
                     index = index - 1;
                     String adname = MVUtils.getString("xuanze");
+                    binding.drawerLayout.closeDrawer(GravityCompat.END);
                     if (adname.equals(districtArray[index])) {
                         adname = districtArray[index];
                         CityCode(adname);
@@ -247,12 +249,8 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
      */
     public void CityCode(String cityName) {
         String name = cityName;
-        if (name == null) {
-            name = "北京";
-            Log.e(TAG, "onDistrictSearched最后: " + name);
-        } else {
-            Log.e(TAG, "onDistrictSearched最后: " + name);
-        }
+        CityCodes(name);
+
 
     }
 
@@ -268,7 +266,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                 //地址
                 String address = aMapLocation.getDistrict();
                 String adname = MVUtils.getString("dingwei");
-
+                mLocationClient.stopLocation();
                 if (adname.equals(address)) {
                     adname = address;
                     CityCode(adname);
@@ -277,8 +275,6 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                     adname = address;
                     CityCode(adname);
                 }
-
-                mLocationClient.stopLocation();
             } else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表
                 Log.e("AmapError", "location Error, ErrCode:"
@@ -286,5 +282,28 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                         + aMapLocation.getErrorInfo());
             }
         }
+    }
+
+    //查询城市id
+    public void CityCodes(String name) {
+        QWeather.getGeoCityLookup(requireActivity(), name, new QWeather.OnResultGeoListener() {
+            @Override
+            public void onError(Throwable throwable) {
+                Log.i(TAG, "getWeather onError: " + throwable);
+            }
+
+            @Override
+            public void onSuccess(GeoBean geoBean) {
+                Log.i(TAG, "onSuccess: " + new Gson().toJson(geoBean));
+                if (Code.OK == geoBean.getCode()) {
+                    String cityName = geoBean.getLocationBean().get(0).getName();
+                    String cityId = geoBean.getLocationBean().get(0).getId();
+                    Log.i(TAG, "onSuccess: "+cityName+",id:"+cityId);
+                } else {
+                    Code code = geoBean.getCode();
+                    Log.i(TAG, "onfail: " + code);
+                }
+            }
+        });
     }
 }
