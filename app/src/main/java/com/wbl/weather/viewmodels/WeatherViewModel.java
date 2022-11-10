@@ -1,9 +1,22 @@
 package com.wbl.weather.viewmodels;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.wbl.weather.model.CityNowWeather;
+import com.wbl.weather.repository.CityWeatherRepository;
+
+import java.lang.invoke.MutableCallSite;
 
 public class WeatherViewModel extends BaseViewModel {
     // TODO: Implement the ViewModel
+    public LiveData<CityNowWeather> cityNowWeather;
+    public String cityname;
 
+    public void  getNowWeather(String name) {
+        cityname = name;
+        CityWeatherRepository cityWeatherRepository = new CityWeatherRepository();
+        cityNowWeather = cityWeatherRepository.getCityNowWeather(name);
+    }
 
 }

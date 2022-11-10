@@ -161,7 +161,11 @@ public class NetworkApi {
                 break;
             case 1:
                 //城市名转城市id
-                BASE_URL="https://geoapi.qweather.com/";
+                BASE_URL="https://geoapi.qweather.com";
+                break;
+            case 2:
+                //实时天气
+                BASE_URL="https://api.qweather.com";
                 break;
             default:break;
         }

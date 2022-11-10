@@ -26,11 +26,13 @@ import com.amap.api.services.district.DistrictItem;
 import com.amap.api.services.district.DistrictResult;
 import com.amap.api.services.district.DistrictSearch;
 import com.amap.api.services.district.DistrictSearchQuery;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
 import com.qweather.sdk.bean.base.Code;
 import com.qweather.sdk.bean.geo.GeoBean;
 import com.qweather.sdk.view.QWeather;
 import com.wbl.weather.R;
+import com.wbl.weather.databinding.ItemNowBinding;
 import com.wbl.weather.databinding.WeatherFragmentBinding;
 import com.wbl.weather.ui.adapter.CityAdapter;
 import com.wbl.weather.utils.MVUtils;
@@ -57,6 +59,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     private int index = 0;
     //行政区数组
     private final String[] districtArray = new String[5];
+
 
     public static WeatherFragment newInstance() {
         return new WeatherFragment();
@@ -104,11 +107,13 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             public void onClick(View view) {
                 //开启定位
                 mLocationClient.startLocation();
+
             }
         });
         //初始化操作
         initSearch();
         initLocation();
+        initView();
         //搜索行政区
         districtArray[index] = "中国";
         districtSearch(districtArray[index]);
@@ -118,6 +123,48 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     public void onDetach() {
         super.onDetach();
         mLocationClient.onDestroy();
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        String name = MVUtils.getString("address");
+        if (name == "" || name == null) {
+            name = "北京市";
+            Log.i(TAG, "initView: " + name);
+            CityCode(name);
+        } else {
+            Log.i(TAG, "initView: " + name);
+            CityCode(name);
+        }
+        //伸缩偏移量监听
+        binding.appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {//收缩时
+                    String name = MVUtils.getString("address");
+                    if (name == null) {
+                        name = "北京市";
+                        Log.i(TAG, "initView: " + name);
+                        binding.toolbarLayout.setTitle(name);
+                    } else {
+                        Log.i(TAG, "initView: " + name);
+                        binding.toolbarLayout.setTitle(name);
+                    }
+                    isShow = true;
+                } else if (isShow) {//展开时
+                    binding.toolbarLayout.setTitle("");
+                    isShow = false;
+                }
+            }
+        });
     }
 
     /**
@@ -228,14 +275,16 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                     binding.drawerLayout.closeDrawer(GravityCompat.END);
                     if (adname.equals(districtArray[index])) {
                         adname = districtArray[index];
+                        MVUtils.put("address", districtArray[index]);
                         CityCode(adname);
                     } else {
                         MVUtils.put("xuanze", districtArray[index]);
+                        MVUtils.put("address", districtArray[index]);
                         adname = districtArray[index];
+
                         CityCode(adname);
                     }
-
-
+                    initView();
                 }
             } else {
                 showMsg(districtResult.getAMapException().getErrorCode() + "");
@@ -249,8 +298,8 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
      */
     public void CityCode(String cityName) {
         String name = cityName;
-        CityCodes(name);
-
+        mViewModel.getNowWeather(name);
+        mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
 
     }
 
@@ -264,17 +313,20 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
                 //地址
-                String address = aMapLocation.getDistrict();
+                String adress = aMapLocation.getDistrict();
                 String adname = MVUtils.getString("dingwei");
                 mLocationClient.stopLocation();
-                if (adname.equals(address)) {
-                    adname = address;
+                if (adname.equals(adress)) {
+                    adname = adress;
+                    MVUtils.put("address", adress);
                     CityCode(adname);
                 } else {
-                    MVUtils.put("dingwei", address);
-                    adname = address;
+                    MVUtils.put("dingwei", adress);
+                    MVUtils.put("address", adress);
+                    adname = adress;
                     CityCode(adname);
                 }
+                initView();
             } else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表
                 Log.e("AmapError", "location Error, ErrCode:"
@@ -284,26 +336,5 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         }
     }
 
-    //查询城市id
-    public void CityCodes(String name) {
-        QWeather.getGeoCityLookup(requireActivity(), name, new QWeather.OnResultGeoListener() {
-            @Override
-            public void onError(Throwable throwable) {
-                Log.i(TAG, "getWeather onError: " + throwable);
-            }
 
-            @Override
-            public void onSuccess(GeoBean geoBean) {
-                Log.i(TAG, "onSuccess: " + new Gson().toJson(geoBean));
-                if (Code.OK == geoBean.getCode()) {
-                    String cityName = geoBean.getLocationBean().get(0).getName();
-                    String cityId = geoBean.getLocationBean().get(0).getId();
-                    Log.i(TAG, "onSuccess: "+cityName+",id:"+cityId);
-                } else {
-                    Code code = geoBean.getCode();
-                    Log.i(TAG, "onfail: " + code);
-                }
-            }
-        });
-    }
 }
