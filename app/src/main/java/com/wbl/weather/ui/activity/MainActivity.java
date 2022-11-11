@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.amap.api.services.district.DistrictItem;
 
@@ -65,6 +66,12 @@ public class MainActivity extends BaseActivity {
         //返回数据时更新ViewModel，ViewModel更新则xml更新
         mainViewModel.biying.observe(this, biYingImgResponse -> dataBinding.setViewmodel(mainViewModel));
         //基于个人隐私保护的关系，这里要设置为true，否则会出现地图白屏的情况
+        dataBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initView();
+            }
+        });
         requestLocation();
         initView();
 
@@ -78,6 +85,7 @@ public class MainActivity extends BaseActivity {
         //获取navController
         NavController navController = Navigation.findNavController(this,R.id.nav_weather_fragment);
         navController.navigate(R.id.weather_fragment);
+        dataBinding.swipeRefreshLayout.setRefreshing(false);
     }
 
 

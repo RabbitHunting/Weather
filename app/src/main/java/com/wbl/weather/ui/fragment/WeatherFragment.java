@@ -32,8 +32,8 @@ import com.qweather.sdk.bean.base.Code;
 import com.qweather.sdk.bean.geo.GeoBean;
 import com.qweather.sdk.view.QWeather;
 import com.wbl.weather.R;
-import com.wbl.weather.databinding.ItemNowBinding;
 import com.wbl.weather.databinding.WeatherFragmentBinding;
+import com.wbl.weather.network.utils.DateUtil;
 import com.wbl.weather.ui.adapter.CityAdapter;
 import com.wbl.weather.utils.MVUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
@@ -129,15 +129,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
      * 初始化
      */
     private void initView() {
-        String name = MVUtils.getString("address");
-        if (name == "" || name == null) {
-            name = "北京市";
-            Log.i(TAG, "initView: " + name);
-            CityCode(name);
-        } else {
-            Log.i(TAG, "initView: " + name);
-            CityCode(name);
-        }
+        initweather();
         //伸缩偏移量监听
         binding.appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
@@ -165,6 +157,20 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                 }
             }
         });
+    }
+    /**
+     * 开始刷新天气
+     */
+    private void initweather() {
+        String name = MVUtils.getString("address");
+        if (name == "" || name == null) {
+            name = "北京市";
+            Log.i(TAG, "initView: " + name);
+            CityCode(name);
+        } else {
+            Log.i(TAG, "initView: " + name);
+            CityCode(name);
+        }
     }
 
     /**
@@ -300,6 +306,8 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         String name = cityName;
         mViewModel.getNowWeather(name);
         mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
+        String time = "更新于："+ DateUtil.getDateTime();
+        binding.timeRe.setText(time);
 
     }
 
