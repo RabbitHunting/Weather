@@ -6,29 +6,20 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!-- 相机权限 -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- 文件读写权限-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 相机权限 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 文件读写权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <!-- 管理外部存储权限，Android11需要-->
+        tools:ignore="ScopedStorage" /> <!-- 管理外部存储权限，Android11需要 -->
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <!--允许获取网络状态，用于网络定位-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--允许获取wifi网络信息，用于网络定位-->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!--允许获取设备和运营商信息，用于问题排查和网络定位-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--允许获取粗略位置-->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--允许获取精准位置-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--允许获取wifi状态改变，用于网络定位-->
+        tools:ignore="ScopedStorage" /> <!-- 允许获取网络状态，用于网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 允许获取wifi网络信息，用于网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许获取设备和运营商信息，用于问题排查和网络定位 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 允许获取粗略位置 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 允许获取精准位置 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 允许获取wifi状态改变，用于网络定位 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -43,6 +34,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Weather">
         <activity
+            android:name=".ui.activity.SourceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/ImageTheme">
@@ -51,14 +45,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!--高德地图Key-->
+        </activity> <!-- 高德地图Key -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="0a102e7f2f3019076646c8a8e432a3bb"/>
-        <!--高德定位服务-->
-        <service android:name="com.amap.api.location.APSService"></service>
+            android:value="0a102e7f2f3019076646c8a8e432a3bb" /> <!-- 高德定位服务 -->
+        <service android:name="com.amap.api.location.APSService" />
     </application>
 
 </manifest>

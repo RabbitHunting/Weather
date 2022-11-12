@@ -164,7 +164,7 @@ public class NetworkApi {
                 BASE_URL="https://geoapi.qweather.com";
                 break;
             case 2:
-                //实时天气
+                //天气数据
                 BASE_URL="https://api.qweather.com";
                 break;
             default:break;

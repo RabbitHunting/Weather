@@ -39,6 +39,8 @@ public class BaseApplication extends Application {
         MVUtils.getInstance();
         //创建本地数据库
         db = AppDatabase.getInstance(this);
+        //腾讯WebView初始化
+        initX5WebView();
 
     }
 
@@ -50,6 +52,26 @@ public class BaseApplication extends Application {
         return db;
     }
 
+    private void initX5WebView() {
+        HashMap map = new HashMap(2);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER,true);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE,true);
+        QbSdk.initTbsSettings(map);
+        //收集本地tbs内核信息并上报服务器，服务器返回结果决定用那个内核
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+            @Override
+            public void onCoreInitFinished() {
+
+            }
+
+            @Override
+            public void onViewInitFinished(boolean b) {
+                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                Log.d("app", " onViewInitFinished is " + b);
+            }
+        };
+        QbSdk.initX5Environment(getApplicationContext(),cb);
+    }
     public static ActivityManager getActivityManager() {
         return ActivityManager.getInstance();
     }

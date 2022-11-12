@@ -143,19 +143,20 @@
                                     android:text="级"
                                     android:textSize="25sp" />
                             </LinearLayout>
+
                             <TextView
                                 android:id="@+id/time_re"
-                                android:text="15"
-                                android:textSize="10sp"
-                                android:gravity="center"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:singleLine="true"
+                                android:clickable="true"
                                 android:ellipsize="marquee"
-                                android:marqueeRepeatLimit="marquee_forever"
                                 android:focusable="true"
                                 android:focusableInTouchMode="true"
-                                android:clickable="true"/>
+                                android:gravity="center"
+                                android:marqueeRepeatLimit="marquee_forever"
+                                android:singleLine="true"
+                                android:text="15"
+                                android:textSize="10sp" />
                         </LinearLayout>
 
                         <androidx.appcompat.widget.Toolbar
@@ -176,27 +177,69 @@
                     android:orientation="vertical"
                     android:overScrollMode="never"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
                     <LinearLayout
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-                        <HorizontalScrollView
+
+                        <!--24小时天气-->
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:overScrollMode="never"
-                            android:scrollbars="none">
-                            <LinearLayout
-                                android:id="@+id/hourly_layout"
+                            android:background="@color/translucent"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/hourly"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"/>
-                        </HorizontalScrollView>
+                                android:layout_gravity="center_horizontal"
+                                android:overScrollMode="never"
+                                android:scrollbars="none" />
+                        </LinearLayout>
+
+
                         <!--未来预报-->
+                        <!--多日预报-->
+                        <LinearLayout
+                            android:layout_marginTop="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@color/translucent">
+
+                            <TextView
+                                android:text="多日预报："
+                                android:textColor="@color/white"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/daily_weather"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center">
+                            <Button
+                                android:id="@+id/laiyuan"
+                                android:background="@color/qtransluncent"
+                                android:text="天气服务由和风天气驱动"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
                     </LinearLayout>
 
 

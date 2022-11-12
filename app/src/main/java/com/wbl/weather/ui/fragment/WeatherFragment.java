@@ -5,11 +5,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,14 +29,13 @@ import com.amap.api.services.district.DistrictResult;
 import com.amap.api.services.district.DistrictSearch;
 import com.amap.api.services.district.DistrictSearchQuery;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.gson.Gson;
-import com.qweather.sdk.bean.base.Code;
-import com.qweather.sdk.bean.geo.GeoBean;
-import com.qweather.sdk.view.QWeather;
 import com.wbl.weather.R;
+import com.wbl.weather.databinding.ItemHourlyBinding;
 import com.wbl.weather.databinding.WeatherFragmentBinding;
 import com.wbl.weather.network.utils.DateUtil;
+import com.wbl.weather.ui.activity.SourceActivity;
 import com.wbl.weather.ui.adapter.CityAdapter;
+import com.wbl.weather.ui.adapter.CityHourlyAdapter;
 import com.wbl.weather.utils.MVUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
 
@@ -110,6 +111,14 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
 
             }
         });
+        binding.laiyuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireActivity(), SourceActivity.class);
+                intent.putExtra("Url","https://www.qweather.com");
+                view.getContext().startActivity(intent);
+            }
+        });
         //初始化操作
         initSearch();
         initLocation();
@@ -129,6 +138,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
      * 初始化
      */
     private void initView() {
+        binding.hourly.setVisibility(View.GONE);
         initweather();
         //伸缩偏移量监听
         binding.appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -304,10 +314,24 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
      */
     public void CityCode(String cityName) {
         String name = cityName;
+
         mViewModel.getNowWeather(name);
+        mViewModel.getHourlyWeather(name);
         mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
         String time = "更新于："+ DateUtil.getDateTime();
         binding.timeRe.setText(time);
+        mViewModel.cityHourlyWeather.observe(requireActivity(),cityHourlyWeather1 -> {
+            ItemHourlyBinding hourlyBinding = DataBindingUtil.inflate(LayoutInflater.from(requireActivity()),R.layout.item_hourly,null,false);
+            CityHourlyAdapter cityHourlyAdapter = new CityHourlyAdapter(cityHourlyWeather1.getHourly());
+            //LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
+            LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            binding.hourly.setLayoutManager(layoutManager);
+            binding.hourly.setAdapter(cityHourlyAdapter);
+            binding.hourly.setVisibility(View.VISIBLE);
+
+        });
+
 
     }
 

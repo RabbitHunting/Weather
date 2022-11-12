@@ -51,7 +51,7 @@ public class CityHourlyWeather {
     }
 
     public class Hourly {
-        private Date fxTime;
+        private String fxTime;
         private String temp;
         private String icon;
         private String text;
@@ -66,12 +66,12 @@ public class CityHourlyWeather {
         private String cloud;
         private String dew;
 
-        public void setFxTime(Date fxTime) {
-            this.fxTime = fxTime;
+        public String getFxTime() {
+            return fxTime;
         }
 
-        public Date getFxTime() {
-            return fxTime;
+        public void setFxTime(String fxTime) {
+            this.fxTime = fxTime;
         }
 
         public void setTemp(String temp) {

@@ -1,12 +1,18 @@
 package com.wbl.weather.network.utils;
 
+import android.util.Log;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
+
+import retrofit2.http.PUT;
 
 public class DateUtil {
     public static final String STANDARD_TIME = "yyyy-MM-dd HH:mm:ss";
@@ -155,6 +161,7 @@ public class DateUtil {
 
     /**
      * 获取第二天凌晨0点时间戳
+     *
      * @return
      */
     public static long getMillisNextEarlyMorning() {
@@ -319,6 +326,21 @@ public class DateUtil {
         //日期回滚一天，也就是最后一天
         calendar.roll(Calendar.DATE, -1);
         return calendar.get(Calendar.DATE);
+    }
+
+    public static String time(String date) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmXXX");
+            Date timess = sdf.parse(date);
+            SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
+            //Log.i("adc", "stime: " + timess);
+            String times = sdf1.format(timess);
+            //Log.i("adc", "time: " + times);
+            return times;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
