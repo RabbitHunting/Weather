@@ -20,11 +20,13 @@
         <import type="com.wbl.weather.utils.JudgmentWeather" />
     </data>
 
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/qtransluncent">
+
         <!-- 主页面 -->
         <RelativeLayout
             android:layout_width="match_parent"
@@ -310,8 +312,8 @@
 
                                         <TextView
                                             android:layout_width="0dp"
-                                            android:layout_weight="1"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="@{airweather.airResponse.now.pm2p5}"
                                             android:textColor="@color/white" />
                                     </LinearLayout>
@@ -330,8 +332,8 @@
 
                                         <TextView
                                             android:layout_width="0dp"
-                                            android:layout_weight="1"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="@{airweather.airResponse.now.no2}"
                                             android:textColor="@color/white" />
                                     </LinearLayout>
@@ -350,8 +352,8 @@
 
                                         <TextView
                                             android:layout_width="0dp"
-                                            android:layout_weight="1"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="@{airweather.airResponse.now.so2}"
                                             android:textColor="@color/white" />
                                     </LinearLayout>
@@ -370,8 +372,8 @@
 
                                         <TextView
                                             android:layout_width="0dp"
-                                            android:layout_weight="1"
                                             android:layout_height="wrap_content"
+                                            android:layout_weight="1"
                                             android:text="@{airweather.airResponse.now.co}"
                                             android:textColor="@color/white" />
                                     </LinearLayout>
@@ -385,6 +387,29 @@
                                 android:layout_height="wrap_content"
                                 android:text="@{JudgmentWeather.kqzl(airweather.airResponse.now.category,airweather.airResponse.now.primary)}"
                                 android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+
+                        <!--生活指数-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/shape_translucent_radius_12"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="生活指数"
+                                android:textColor="@color/white" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/live_indices"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
 
                         </LinearLayout>
 

@@ -5,6 +5,7 @@ import com.wbl.weather.model.CityAirResponse;
 import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityIdResponse;
+import com.wbl.weather.model.CityLiveResponse;
 import com.wbl.weather.model.CityNowWeather;
 
 import io.reactivex.Observable;
@@ -37,6 +38,9 @@ public interface ApiService {
 
     @GET("/v7/air/now?key=922cb910930843a8b60d5588e9cf8182")
     Observable<CityAirResponse> cityAirWeather(@Query("location") String id);
+
+    @GET("/v7/indices/1d?type=1,2,3,6,8,16&key=922cb910930843a8b60d5588e9cf8182")
+    Observable<CityLiveResponse> cityLiveWeather(@Query("location") String id);
 
 
 }

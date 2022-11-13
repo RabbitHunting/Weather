@@ -10,6 +10,7 @@ import com.wbl.weather.model.CityAirResponse;
 import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityIdResponse;
+import com.wbl.weather.model.CityLiveResponse;
 import com.wbl.weather.model.CityNowWeather;
 import com.wbl.weather.network.BaseObserver;
 import com.wbl.weather.network.NetworkApi;
@@ -32,6 +33,7 @@ public class CityWeatherRepository {
     final MutableLiveData<CityHourlyWeather> cityHourlyWeatherM = new MutableLiveData<>();
     final MutableLiveData<CityDailyResponse> cityDailyResponseM = new MutableLiveData<>();
     final MutableLiveData<CityAirResponse> cityAirResponseM = new MutableLiveData<>();
+    final MutableLiveData<CityLiveResponse> cityLiveResponseM = new MutableLiveData<>();
 
     //实时天气
     public MutableLiveData<CityNowWeather> getCityNowWeather(String name) {
@@ -57,6 +59,12 @@ public class CityWeatherRepository {
         return cityAirResponseM;
     }
 
+    //生活指数
+    public MutableLiveData<CityLiveResponse> getCityLiveResponse(String name) {
+        cityid(name,5);
+        return cityLiveResponseM;
+    }
+
     private void cityid(String name,int type) {
         ApiService apiService = NetworkApi.createService(ApiService.class,1);
         apiService.cityid(name).compose(NetworkApi.applySchedulers(new BaseObserver<CityIdResponse>() {
@@ -75,6 +83,9 @@ public class CityWeatherRepository {
                         break;
                     case 4:
                         cityAir(id);
+                        break;
+                    case 5:
+                        cityLive(id);
                         break;
                     default:
                         break;
@@ -179,5 +190,23 @@ public class CityWeatherRepository {
             }
         }));
 
+    }
+
+    /**
+     * 生活指数
+     */
+    private void cityLive(String id) {
+        ApiService apiService = NetworkApi.createService(ApiService.class,2);
+        apiService.cityLiveWeather(id).compose(NetworkApi.applySchedulers(new BaseObserver<CityLiveResponse>() {
+            @Override
+            public void onSuccess(CityLiveResponse cityLiveResponse) {
+                cityLiveResponseM.postValue(cityLiveResponse);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                KLog.e("CityLive Error:"+e.toString());
+            }
+        }));
     }
 }

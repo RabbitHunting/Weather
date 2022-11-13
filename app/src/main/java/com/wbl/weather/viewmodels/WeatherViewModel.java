@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.wbl.weather.model.CityAirResponse;
 import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
+import com.wbl.weather.model.CityLiveResponse;
 import com.wbl.weather.model.CityNowWeather;
 import com.wbl.weather.repository.CityWeatherRepository;
 
@@ -17,6 +18,7 @@ public class WeatherViewModel extends BaseViewModel {
     public LiveData<CityHourlyWeather> cityHourlyWeather;
     public LiveData<CityDailyResponse> cityDailyResponse;
     public LiveData<CityAirResponse> airResponse;
+    public LiveData<CityLiveResponse> liveResponse;
     public String cityname;
     CityWeatherRepository cityWeatherRepository = new CityWeatherRepository();
 
@@ -35,5 +37,10 @@ public class WeatherViewModel extends BaseViewModel {
     public void getAirWeather(String name){
         airResponse = cityWeatherRepository.getCityAirResponse(name);
     }
+
+    public void getLiveIndices(String name) {
+        liveResponse = cityWeatherRepository.getCityLiveResponse(name);
+    }
+
 
 }

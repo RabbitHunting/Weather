@@ -1,17 +1,20 @@
 package com.wbl.weather.ui.fragment;
 
+import androidx.annotation.ColorInt;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +40,7 @@ import com.wbl.weather.ui.activity.SourceActivity;
 import com.wbl.weather.ui.adapter.CityAdapter;
 import com.wbl.weather.ui.adapter.CityDailyAdapter;
 import com.wbl.weather.ui.adapter.CityHourlyAdapter;
+import com.wbl.weather.ui.adapter.CityLiveAdapter;
 import com.wbl.weather.utils.MVUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
 
@@ -120,6 +124,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                 view.getContext().startActivity(intent);
             }
         });
+
         //初始化操作
         initSearch();
         initLocation();
@@ -157,17 +162,21 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                         name = "北京市";
                         Log.i(TAG, "initView: " + name);
                         binding.toolbarLayout.setTitle(name);
+                        binding.toolbar.setBackgroundColor(Color.parseColor("#FF6200EE"));
                     } else {
                         Log.i(TAG, "initView: " + name);
                         binding.toolbarLayout.setTitle(name);
+                        binding.toolbar.setBackgroundColor(Color.parseColor("#FF6200EE"));
                     }
                     isShow = true;
                 } else if (isShow) {//展开时
                     binding.toolbarLayout.setTitle("");
+                    binding.toolbar.setBackgroundColor(Color.parseColor("#00000000"));
                     isShow = false;
                 }
             }
         });
+
     }
     /**
      * 开始刷新天气
@@ -320,6 +329,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         mViewModel.getHourlyWeather(name);
         mViewModel.getDailyWeather(name);
         mViewModel.getAirWeather(name);
+        mViewModel.getLiveIndices(name);
         mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
         mViewModel.airResponse.observe(requireActivity(),cityAirResponse -> binding.setAirweather(mViewModel));
         String time = "更新于："+ DateUtil.getDateTime();
@@ -339,6 +349,13 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             binding.dailyWeather.setLayoutManager(layoutManager);
             binding.dailyWeather.setAdapter(cityDailyAdapter);
         });
+        mViewModel.liveResponse.observe(requireActivity(),cityLiveResponse -> {
+            CityLiveAdapter cityLiveAdapter = new CityLiveAdapter(cityLiveResponse.getDaily());
+            LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
+            binding.liveIndices.setLayoutManager(layoutManager);
+            binding.liveIndices.setAdapter(cityLiveAdapter);
+        });
+
 
     }
 

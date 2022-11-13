@@ -3,15 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/ba.xml" value="0.152" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/ic_launcher_background.xml" value="0.118" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/shape_line_black.xml" value="0.1" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/shape_translucent_radius_12.xml" value="0.152" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/shape_translucent_radius_6.xml" value="0.152" />
+        <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/white_borde.xml" value="0.152" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/activity_source.xml" value="0.24114583333333334" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_city.xml" value="0.1" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_daily.xml" value="0.24114583333333334" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_hourly.xml" value="0.24114583333333334" />
+        <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_live.xml" value="0.24114583333333334" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_now.xml" value="0.23743589743589744" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/weather_fragment.xml" value="0.2" />
       </map>
