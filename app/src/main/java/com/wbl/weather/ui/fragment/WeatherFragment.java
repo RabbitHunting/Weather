@@ -35,6 +35,7 @@ import com.wbl.weather.databinding.WeatherFragmentBinding;
 import com.wbl.weather.network.utils.DateUtil;
 import com.wbl.weather.ui.activity.SourceActivity;
 import com.wbl.weather.ui.adapter.CityAdapter;
+import com.wbl.weather.ui.adapter.CityDailyAdapter;
 import com.wbl.weather.ui.adapter.CityHourlyAdapter;
 import com.wbl.weather.utils.MVUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
@@ -317,21 +318,25 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
 
         mViewModel.getNowWeather(name);
         mViewModel.getHourlyWeather(name);
+        mViewModel.getDailyWeather(name);
         mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
         String time = "更新于："+ DateUtil.getDateTime();
         binding.timeRe.setText(time);
         mViewModel.cityHourlyWeather.observe(requireActivity(),cityHourlyWeather1 -> {
-            ItemHourlyBinding hourlyBinding = DataBindingUtil.inflate(LayoutInflater.from(requireActivity()),R.layout.item_hourly,null,false);
             CityHourlyAdapter cityHourlyAdapter = new CityHourlyAdapter(cityHourlyWeather1.getHourly());
-            //LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
             binding.hourly.setLayoutManager(layoutManager);
             binding.hourly.setAdapter(cityHourlyAdapter);
             binding.hourly.setVisibility(View.VISIBLE);
-
         });
 
+        mViewModel.cityDailyResponse.observe(requireActivity(),cityDailyResponse -> {
+            CityDailyAdapter cityDailyAdapter = new CityDailyAdapter(cityDailyResponse.getDaily());
+            LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
+            binding.dailyWeather.setLayoutManager(layoutManager);
+            binding.dailyWeather.setAdapter(cityDailyAdapter);
+        });
 
     }
 

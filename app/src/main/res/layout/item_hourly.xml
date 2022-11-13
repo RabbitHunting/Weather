@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
+
         <variable
             name="hourlyWeather"
             type="com.wbl.weather.model.CityHourlyWeather.Hourly" />
@@ -14,35 +16,26 @@
 
         <TextView
             android:id="@+id/hourly_time"
-            android:text="@{hourlyWeather.fxTime}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{hourlyWeather.fxTime}"
             android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/hourly_info"
-            android:text="@{hourlyWeather.text}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{hourlyWeather.text}"
             android:textColor="@color/white" />
 
-        <LinearLayout
+
+        <TextView
+            android:id="@+id/hourly_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:text="@{hourlyWeather.temp+`\u2103`}"
+            android:textColor="@color/white" />
 
-            <TextView
-                android:id="@+id/hourly_temp"
-                android:text="@{hourlyWeather.temp}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="℃"
-                android:textColor="@color/white" />
-        </LinearLayout>
     </LinearLayout>
 </layout>

@@ -1,20 +1,14 @@
-package com.wbl.weather.network.utils;
+package com.wbl.weather.utils;
 
-import android.util.Log;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
 
-import retrofit2.http.PUT;
-
-public class DateUtil {
+public class EasyDate {
     public static final String STANDARD_TIME = "yyyy-MM-dd HH:mm:ss";
     public static final String FULL_TIME = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final String YEAR_MONTH_DAY = "yyyy-MM-dd";
@@ -49,7 +43,6 @@ public class DateUtil {
         return new SimpleDateFormat(STANDARD_TIME, Locale.CHINESE).format(new Date());
     }
 
-
     /**
      * 获取完整时间
      *
@@ -79,9 +72,35 @@ public class DateUtil {
 
     /**
      * 获取年月日
-     *
      * @param delimiter 分隔符
      * @return 例如 2021年07月01号
+     */
+    public static String getTheYearMonthAndDayDelimiter(CharSequence delimiter) {
+        return new SimpleDateFormat(YEAR + delimiter + MONTH + delimiter + DAY, Locale.CHINESE).format(new Date());
+    }
+
+    /**
+     * 获取时分秒
+     *
+     * @return 例如 10:38:25
+     */
+    public static String getHoursMinutesAndSeconds() {
+        return new SimpleDateFormat(HOUR_MINUTE_SECOND, Locale.CHINESE).format(new Date());
+    }
+
+    /**
+     * 获取时分秒
+     *
+     * @return 例如 10时38分50秒
+     */
+    public static String getHoursMinutesAndSecondsCn() {
+        return new SimpleDateFormat(HOUR_MINUTE_SECOND_CN, Locale.CHINESE).format(new Date());
+    }
+
+    /**
+     * 获取时分秒
+     * @param delimiter 分隔符
+     * @return 例如 2021/07/01
      */
     public static String getHoursMinutesAndSecondsDelimiter(CharSequence delimiter) {
         return new SimpleDateFormat(HOUR + delimiter + MINUTE + delimiter + SECOND, Locale.CHINESE).format(new Date());
@@ -157,23 +176,6 @@ public class DateUtil {
      */
     public static long getTimestamp() {
         return System.currentTimeMillis();
-    }
-
-    /**
-     * 获取第二天凌晨0点时间戳
-     *
-     * @return
-     */
-    public static long getMillisNextEarlyMorning() {
-        Calendar cal = Calendar.getInstance();
-        //日期加1
-        cal.add(Calendar.DAY_OF_YEAR, 1);
-        //时间设定到0点整
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTimeInMillis();
     }
 
     /**
@@ -328,7 +330,18 @@ public class DateUtil {
         return calendar.get(Calendar.DATE);
     }
 
-
-
+    public static String time(String date) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmXXX");
+            Date timess = sdf.parse(date);
+            SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
+            //Log.i("adc", "stime: " + timess);
+            String times = sdf1.format(timess);
+            //Log.i("adc", "time: " + times);
+            return times;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
-

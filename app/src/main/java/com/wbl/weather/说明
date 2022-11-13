@@ -1,7 +1,7 @@
 network 网络框架
 errorhandler 放置网络错误的处理
 interceptor 放置相应与请求的拦截器
-utils 放置时间和日志的工具包
+utils 放置时间和日志的工具包（主要为网络框架使用）
 ExceptionHandle 为异常处理
 NetworkApi 放置网络的API
 BaseResponse 基础的返回类，返回错误码和错误信息
@@ -13,3 +13,13 @@ api 网络接口
 db 数据库
 
 model 数据模型
+
+repository 数据处理,数据信息的来源
+
+ui 视图界面
+
+utils 外部所用的工具包
+
+view 自定义控件
+
+viewmodels 数据和视图层的中间接口

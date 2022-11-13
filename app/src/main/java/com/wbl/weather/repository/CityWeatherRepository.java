@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.wbl.weather.api.ApiService;
+import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityIdResponse;
 import com.wbl.weather.model.CityNowWeather;
@@ -13,6 +14,7 @@ import com.wbl.weather.network.BaseObserver;
 import com.wbl.weather.network.NetworkApi;
 import com.wbl.weather.network.utils.DateUtil;
 import com.wbl.weather.network.utils.KLog;
+import com.wbl.weather.utils.EasyDate;
 import com.wbl.weather.utils.MVUtils;
 
 import java.util.Date;
@@ -27,15 +29,24 @@ public class CityWeatherRepository {
     final MutableLiveData<CityIdResponse> cityIdResponses = new MutableLiveData<>();
     final MutableLiveData<CityNowWeather> cityNowWeatherM = new MutableLiveData<>();
     final MutableLiveData<CityHourlyWeather> cityHourlyWeatherM = new MutableLiveData<>();
+    final MutableLiveData<CityDailyResponse> cityDailyResponseM = new MutableLiveData<>();
 
+    //实时天气
     public MutableLiveData<CityNowWeather> getCityNowWeather(String name) {
         cityid(name,1);
         return cityNowWeatherM;
     }
 
+    //24小时天气
     public MutableLiveData<CityHourlyWeather> getCityHourlyWeather(String name) {
         cityid(name,2);
         return cityHourlyWeatherM;
+    }
+
+    //7天气天气
+    public MutableLiveData<CityDailyResponse> getCityDailyResponse(String name) {
+        cityid(name,3);
+        return cityDailyResponseM;
     }
 
     private void cityid(String name,int type) {
@@ -51,6 +62,9 @@ public class CityWeatherRepository {
                     case 2:
                         cityHourly(id);
                         break;
+                    case 3:
+                        cityDaily(id);
+                        break;
                     default:
                         break;
                 }
@@ -64,12 +78,17 @@ public class CityWeatherRepository {
             }
         }));
     }
+
+    /**
+     * 实时天气
+     * @param id
+     */
     private void CityNow(String id) {
         ApiService apiService = NetworkApi.createService(ApiService.class,2);
         apiService.cityNowWeather(id).compose(NetworkApi.applySchedulers(new BaseObserver<CityNowWeather>() {
             @Override
             public void onSuccess(CityNowWeather cityNowWeather) {
-                Log.i(TAG, "onSuccessaas: "+cityNowWeather);
+                //Log.i(TAG, "onSuccessaas: "+cityNowWeather);
                 cityNowWeatherM.setValue(cityNowWeather);
             }
 
@@ -81,16 +100,20 @@ public class CityWeatherRepository {
     }
 
 
+    /**
+     * 24小时天气
+     * @param id
+     */
     private void cityHourly(String id) {
         ApiService apiService = NetworkApi.createService(ApiService.class,2);
         apiService.cityhourlyWeather(id).compose(NetworkApi.applySchedulers(new BaseObserver<CityHourlyWeather>() {
             @Override
             public void onSuccess(CityHourlyWeather cityHourlyWeather) {
-                Log.i(TAG, "onSuccess: "+cityHourlyWeather);
+                //Log.i(TAG, "onSuccess: "+cityHourlyWeather);
                 for (int i = 0;i<cityHourlyWeather.getHourly().size();i++) {
                     String time = cityHourlyWeather.getHourly().get(i).getFxTime();
                     //Log.i(TAG, "时间原onSuccess: "+time);
-                    String times = DateUtil.time(time);
+                    String times = EasyDate.time(time);
                     //Log.i(TAG, "时间转onSuccess: "+times);
                     cityHourlyWeather.getHourly().get(i).setFxTime(times);
                 }
@@ -100,6 +123,30 @@ public class CityWeatherRepository {
             @Override
             public void onFailure(Throwable e) {
                 KLog.e("CityHourly Error:"+e.toString());
+            }
+        }));
+    }
+
+    /**
+     * 7天天气预报
+     * @param id
+     */
+    private void cityDaily(String id) {
+        ApiService apiService = NetworkApi.createService(ApiService.class,2);
+        apiService.cityDailyWeather(id).compose(NetworkApi.applySchedulers(new BaseObserver<CityDailyResponse>() {
+            @Override
+            public void onSuccess(CityDailyResponse cityDailyResponse) {
+                //Log.i(TAG, "onSuccess: "+cityDailyResponse);
+                for (int i = 0 ; i<cityDailyResponse.getDaily().size();i++) {
+                    String time = cityDailyResponse.getDaily().get(i).getFxDate();
+                    Log.i(TAG, "onSuccess时间: "+time);
+                }
+                cityDailyResponseM.postValue(cityDailyResponse);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                KLog.e("CityDaily Error:" +e.toString());
             }
         }));
     }
