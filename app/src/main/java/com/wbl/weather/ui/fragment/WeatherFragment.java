@@ -319,7 +319,9 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         mViewModel.getNowWeather(name);
         mViewModel.getHourlyWeather(name);
         mViewModel.getDailyWeather(name);
+        mViewModel.getAirWeather(name);
         mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
+        mViewModel.airResponse.observe(requireActivity(),cityAirResponse -> binding.setAirweather(mViewModel));
         String time = "更新于："+ DateUtil.getDateTime();
         binding.timeRe.setText(time);
         mViewModel.cityHourlyWeather.observe(requireActivity(),cityHourlyWeather1 -> {

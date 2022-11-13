@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.wbl.weather.api.ApiService;
+import com.wbl.weather.model.CityAirResponse;
 import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityIdResponse;
@@ -30,6 +31,7 @@ public class CityWeatherRepository {
     final MutableLiveData<CityNowWeather> cityNowWeatherM = new MutableLiveData<>();
     final MutableLiveData<CityHourlyWeather> cityHourlyWeatherM = new MutableLiveData<>();
     final MutableLiveData<CityDailyResponse> cityDailyResponseM = new MutableLiveData<>();
+    final MutableLiveData<CityAirResponse> cityAirResponseM = new MutableLiveData<>();
 
     //实时天气
     public MutableLiveData<CityNowWeather> getCityNowWeather(String name) {
@@ -49,6 +51,12 @@ public class CityWeatherRepository {
         return cityDailyResponseM;
     }
 
+    //空气质量
+    public MutableLiveData<CityAirResponse> getCityAirResponse(String name) {
+        cityid(name,4);
+        return cityAirResponseM;
+    }
+
     private void cityid(String name,int type) {
         ApiService apiService = NetworkApi.createService(ApiService.class,1);
         apiService.cityid(name).compose(NetworkApi.applySchedulers(new BaseObserver<CityIdResponse>() {
@@ -64,6 +72,9 @@ public class CityWeatherRepository {
                         break;
                     case 3:
                         cityDaily(id);
+                        break;
+                    case 4:
+                        cityAir(id);
                         break;
                     default:
                         break;
@@ -137,10 +148,10 @@ public class CityWeatherRepository {
             @Override
             public void onSuccess(CityDailyResponse cityDailyResponse) {
                 //Log.i(TAG, "onSuccess: "+cityDailyResponse);
-                for (int i = 0 ; i<cityDailyResponse.getDaily().size();i++) {
+                /*for (int i = 0 ; i<cityDailyResponse.getDaily().size();i++) {
                     String time = cityDailyResponse.getDaily().get(i).getFxDate();
                     Log.i(TAG, "onSuccess时间: "+time);
-                }
+                }*/
                 cityDailyResponseM.postValue(cityDailyResponse);
             }
 
@@ -149,5 +160,24 @@ public class CityWeatherRepository {
                 KLog.e("CityDaily Error:" +e.toString());
             }
         }));
+    }
+
+    /**
+     * 空气质量
+     */
+    private void cityAir(String id) {
+        ApiService apiService = NetworkApi.createService(ApiService.class,2);
+        apiService.cityAirWeather(id).compose(NetworkApi.applySchedulers(new BaseObserver<CityAirResponse>() {
+            @Override
+            public void onSuccess(CityAirResponse cityAirResponse) {
+                cityAirResponseM.postValue(cityAirResponse);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                KLog.e("CityAir Error:" +e.toString());
+            }
+        }));
+
     }
 }

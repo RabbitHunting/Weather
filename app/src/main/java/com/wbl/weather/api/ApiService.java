@@ -1,6 +1,7 @@
 package com.wbl.weather.api;
 
 import com.wbl.weather.model.BiYingResponse;
+import com.wbl.weather.model.CityAirResponse;
 import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityIdResponse;
@@ -33,6 +34,9 @@ public interface ApiService {
 
     @GET("/v7/weather/7d?key=922cb910930843a8b60d5588e9cf8182")
     Observable<CityDailyResponse> cityDailyWeather(@Query("location") String id);
+
+    @GET("/v7/air/now?key=922cb910930843a8b60d5588e9cf8182")
+    Observable<CityAirResponse> cityAirWeather(@Query("location") String id);
 
 
 }

@@ -3,6 +3,7 @@ package com.wbl.weather.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.wbl.weather.model.CityAirResponse;
 import com.wbl.weather.model.CityDailyResponse;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityNowWeather;
@@ -15,6 +16,7 @@ public class WeatherViewModel extends BaseViewModel {
     public LiveData<CityNowWeather> cityNowWeather;
     public LiveData<CityHourlyWeather> cityHourlyWeather;
     public LiveData<CityDailyResponse> cityDailyResponse;
+    public LiveData<CityAirResponse> airResponse;
     public String cityname;
     CityWeatherRepository cityWeatherRepository = new CityWeatherRepository();
 
@@ -28,6 +30,10 @@ public class WeatherViewModel extends BaseViewModel {
 
     public void getDailyWeather(String name){
         cityDailyResponse = cityWeatherRepository.getCityDailyResponse(name);
+    }
+
+    public void getAirWeather(String name){
+        airResponse = cityWeatherRepository.getCityAirResponse(name);
     }
 
 }

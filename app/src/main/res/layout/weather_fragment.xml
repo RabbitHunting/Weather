@@ -12,6 +12,12 @@
         <variable
             name="weather"
             type="com.wbl.weather.viewmodels.WeatherViewModel" />
+
+        <variable
+            name="airweather"
+            type="com.wbl.weather.viewmodels.WeatherViewModel" />
+
+        <import type="com.wbl.weather.utils.JudgmentWeather" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -172,10 +178,10 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="10dp">
 
                         <!--24小时天气-->
                         <LinearLayout
@@ -194,21 +200,20 @@
                                 android:scrollbars="none" />
                         </LinearLayout>
 
-
-                        <!--未来预报-->
                         <!--多日预报-->
                         <LinearLayout
-                            android:layout_marginTop="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:background="@drawable/shape_translucent_radius_12">
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/shape_translucent_radius_12"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:text="多日预报："
-                                android:textColor="@color/white"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="多日预报："
+                                android:textColor="@color/white" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/daily_weather"
@@ -216,22 +221,192 @@
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
 
+                        <!--空气质量-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/shape_translucent_radius_12"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="空气质量"
+                                android:textColor="@color/white" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:text="污染指数"
+                                        android:textColor="@color/white" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:text="@{airweather.airResponse.now.category}"
+                                        android:textColor="@color/white" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:text="@{airweather.airResponse.now.aqi}"
+                                        android:textColor="@color/white" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="PM10"
+                                            android:textColor="@color/white" />
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="@{airweather.airResponse.now.pm10}"
+                                            android:textColor="@color/white" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="PM2.5"
+                                            android:textColor="@color/white" />
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@{airweather.airResponse.now.pm2p5}"
+                                            android:textColor="@color/white" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="NO2"
+                                            android:textColor="@color/white" />
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@{airweather.airResponse.now.no2}"
+                                            android:textColor="@color/white" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="SO2"
+                                            android:textColor="@color/white" />
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@{airweather.airResponse.now.so2}"
+                                            android:textColor="@color/white" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="CO"
+                                            android:textColor="@color/white" />
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@{airweather.airResponse.now.co}"
+                                            android:textColor="@color/white" />
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@{JudgmentWeather.kqzl(airweather.airResponse.now.category,airweather.airResponse.now.primary)}"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
                             android:gravity="center">
+
                             <Button
                                 android:id="@+id/laiyuan"
-                                android:background="@color/qtransluncent"
-                                android:text="天气服务由和风天气驱动"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:background="@color/qtransluncent"
+                                android:text="天气服务由和风天气驱动" />
                         </LinearLayout>
                     </LinearLayout>
 
