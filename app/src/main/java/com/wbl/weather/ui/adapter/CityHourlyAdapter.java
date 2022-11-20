@@ -13,6 +13,7 @@ import com.wbl.weather.R;
 import com.wbl.weather.databinding.ItemHourlyBinding;
 import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.ui.activity.SourceActivity;
+import com.wbl.weather.utils.JudgmentWeather;
 import com.wbl.weather.utils.MVUtils;
 
 import java.util.List;
@@ -34,6 +35,10 @@ public class CityHourlyAdapter extends BaseQuickAdapter<CityHourlyWeather.Hourly
         ItemHourlyBinding binding = bindingHolder.getDataBinding();
         if (binding != null) {
             binding.setHourlyWeather(hourly);
+            int a = JudgmentWeather.weatherIcon(hourly.getIcon(),hourly.getFxTime());
+            if (a != 1) {
+                binding.info.setImageResource(a);
+            }
             binding.setOnclick(new Click());
             binding.executePendingBindings();
         }

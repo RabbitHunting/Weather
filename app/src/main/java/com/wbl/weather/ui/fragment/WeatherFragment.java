@@ -43,6 +43,7 @@ import com.wbl.weather.ui.adapter.CityAdapter;
 import com.wbl.weather.ui.adapter.CityDailyAdapter;
 import com.wbl.weather.ui.adapter.CityHourlyAdapter;
 import com.wbl.weather.ui.adapter.CityLiveAdapter;
+import com.wbl.weather.utils.JudgmentWeather;
 import com.wbl.weather.utils.MVUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
 
@@ -334,7 +335,12 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         mViewModel.getDailyWeather(name);
         mViewModel.getAirWeather(name);
         mViewModel.getLiveIndices(name);
-        mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
+        mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> {
+            binding.setWeather(mViewModel);
+            int id = JudgmentWeather.backid(cityNowWeather.getNow().getIcon());
+            binding.weatherFragment.setBackgroundResource(id);
+
+        });
         mViewModel.airResponse.observe(requireActivity(),cityAirResponse ->{
             binding.setAirweather(mViewModel);
             binding.air.setOnClickListener(new View.OnClickListener() {

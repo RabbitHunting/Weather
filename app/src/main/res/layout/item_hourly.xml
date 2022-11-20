@@ -28,13 +28,19 @@
             android:layout_height="wrap_content"
             android:text="@{hourlyWeather.fxTime}"
             android:textColor="@color/white" />
+        <ImageView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="@color/white"
+            />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/hourly_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{hourlyWeather.text}"
-            android:textColor="@color/white" />
+            android:textColor="@color/white" />-->
 
 
         <TextView

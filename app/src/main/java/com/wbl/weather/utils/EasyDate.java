@@ -1,5 +1,7 @@
 package com.wbl.weather.utils;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -72,6 +74,7 @@ public class EasyDate {
 
     /**
      * 获取年月日
+     *
      * @param delimiter 分隔符
      * @return 例如 2021年07月01号
      */
@@ -99,6 +102,7 @@ public class EasyDate {
 
     /**
      * 获取时分秒
+     *
      * @param delimiter 分隔符
      * @return 例如 2021/07/01
      */
@@ -343,5 +347,34 @@ public class EasyDate {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static boolean dayAndNight() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH");
+        String hour = sdf.format(new Date());
+        int k = Integer.parseInt(hour);
+        if ((k >= 0 && k < 6) || (k >= 18 && k < 24)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean dayandnight(String time) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            Date times = sdf.parse(time);
+            SimpleDateFormat sdf1 = new SimpleDateFormat("HH");
+            String time1 = sdf1.format(times);
+            int k = Integer.parseInt(time1);
+            if ((k >= 0 && k < 6) || (k >= 18 && k < 24)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
