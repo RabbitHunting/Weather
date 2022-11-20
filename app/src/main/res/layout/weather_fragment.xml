@@ -57,7 +57,7 @@
                         app:toolbarId="@+id/toolbar">
                         <!--实时天气-->
                         <LinearLayout
-                            android:id="@+id/now_weather"
+                            android:id="@+id/now"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -225,6 +225,7 @@
 
                         <!--空气质量-->
                         <LinearLayout
+                            android:id="@+id/air"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"

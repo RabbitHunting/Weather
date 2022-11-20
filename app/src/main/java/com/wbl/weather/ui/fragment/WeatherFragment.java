@@ -35,6 +35,8 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.wbl.weather.R;
 import com.wbl.weather.databinding.ItemHourlyBinding;
 import com.wbl.weather.databinding.WeatherFragmentBinding;
+import com.wbl.weather.model.CityAirResponse;
+import com.wbl.weather.model.CityNowWeather;
 import com.wbl.weather.network.utils.DateUtil;
 import com.wbl.weather.ui.activity.SourceActivity;
 import com.wbl.weather.ui.adapter.CityAdapter;
@@ -124,6 +126,8 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                 view.getContext().startActivity(intent);
             }
         });
+
+
 
         //初始化操作
         initSearch();
@@ -331,10 +335,21 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         mViewModel.getAirWeather(name);
         mViewModel.getLiveIndices(name);
         mViewModel.cityNowWeather.observe(requireActivity(), cityNowWeather -> binding.setWeather(mViewModel));
-        mViewModel.airResponse.observe(requireActivity(),cityAirResponse -> binding.setAirweather(mViewModel));
+        mViewModel.airResponse.observe(requireActivity(),cityAirResponse ->{
+            binding.setAirweather(mViewModel);
+            binding.air.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(requireActivity(), SourceActivity.class);
+                    intent.putExtra("Url",cityAirResponse.getFxLink());
+                    requireActivity().startActivity(intent);
+                }
+            });
+        });
         String time = "更新于："+ DateUtil.getDateTime();
         binding.timeRe.setText(time);
         mViewModel.cityHourlyWeather.observe(requireActivity(),cityHourlyWeather1 -> {
+            MVUtils.put("hourly",cityHourlyWeather1.getFxLink());
             CityHourlyAdapter cityHourlyAdapter = new CityHourlyAdapter(cityHourlyWeather1.getHourly());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -344,12 +359,14 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         });
 
         mViewModel.cityDailyResponse.observe(requireActivity(),cityDailyResponse -> {
+            MVUtils.put("cityDail",cityDailyResponse.getFxLink());
             CityDailyAdapter cityDailyAdapter = new CityDailyAdapter(cityDailyResponse.getDaily());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             binding.dailyWeather.setLayoutManager(layoutManager);
             binding.dailyWeather.setAdapter(cityDailyAdapter);
         });
         mViewModel.liveResponse.observe(requireActivity(),cityLiveResponse -> {
+            MVUtils.put("live",cityLiveResponse.getFxLink());
             CityLiveAdapter cityLiveAdapter = new CityLiveAdapter(cityLiveResponse.getDaily());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             binding.liveIndices.setLayoutManager(layoutManager);
@@ -391,6 +408,9 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             }
         }
     }
+
+
+
 
 
 }

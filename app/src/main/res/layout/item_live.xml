@@ -6,59 +6,76 @@
         <variable
             name="liveIndices"
             type="com.wbl.weather.model.CityLiveResponse.Daily" />
+        <variable
+            name="onClick"
+            type="com.wbl.weather.ui.adapter.CityLiveAdapter.Click" />
     </data>
 
-    <LinearLayout
-        android:background="@drawable/white_borde"
-        android:layout_marginTop="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:orientation="horizontal">
+    <RelativeLayout
+        android:id="@+id/live"
+        android:onClick="@{() -> onClick.Click(live)}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
         <LinearLayout
-            android:layout_margin="1dp"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center">
-            <TextView
-                android:textColor="@color/white"
-                android:text="@{liveIndices.name}"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+            android:layout_margin="15dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/white_borde"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="1dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@{liveIndices.name}"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="适宜程度:"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{liveIndices.category}"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="建议:"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{liveIndices.text}"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_margin="1dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical">
-            <TextView
-                android:text="适宜程度:"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:text="@{liveIndices.category}"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:text="建议:"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:textColor="@color/white"
-                android:text="@{liveIndices.text}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

@@ -6,8 +6,16 @@
         <variable
             name="hourlyWeather"
             type="com.wbl.weather.model.CityHourlyWeather.Hourly" />
+        <variable
+            name="onclick"
+            type="com.wbl.weather.ui.adapter.CityHourlyAdapter.Click" />
     </data>
 
+    <RelativeLayout
+        android:id="@+id/hourly"
+        android:onClick="@{() -> onclick.Click(hourly)}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,4 +46,5 @@
 
 
     </LinearLayout>
+    </RelativeLayout>
 </layout>

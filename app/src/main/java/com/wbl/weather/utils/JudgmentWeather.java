@@ -1,6 +1,12 @@
 package com.wbl.weather.utils;
 
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+
+import com.wbl.weather.model.CityAirResponse;
+import com.wbl.weather.model.CityNowWeather;
+import com.wbl.weather.ui.activity.SourceActivity;
 
 public class JudgmentWeather {
 
@@ -26,4 +32,6 @@ public class JudgmentWeather {
 
         return text;
     }
+
+
 }
