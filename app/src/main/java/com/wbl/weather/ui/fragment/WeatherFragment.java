@@ -130,6 +130,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
 
 
 
+
         //初始化操作
         initSearch();
         initLocation();
@@ -151,6 +152,21 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     private void initView() {
         binding.hourly.setVisibility(View.GONE);
         initweather();
+        binding.hd.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+                if (i1 == 0) {
+                    Log.i(TAG, "onScrollChange: 顶部");
+                    binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            initView();
+                        }
+                    });
+                }
+            }
+        });
+        binding.swipeRefreshLayout.setRefreshing(false);
         //伸缩偏移量监听
         binding.appbarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
@@ -174,13 +190,17 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
                         binding.toolbar.setBackgroundColor(Color.parseColor("#FF6200EE"));
                     }
                     isShow = true;
+
                 } else if (isShow) {//展开时
                     binding.toolbarLayout.setTitle("");
                     binding.toolbar.setBackgroundColor(Color.parseColor("#00000000"));
                     isShow = false;
+
                 }
             }
         });
+
+
 
     }
     /**

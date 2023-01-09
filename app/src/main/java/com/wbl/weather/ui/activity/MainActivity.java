@@ -1,6 +1,7 @@
 package com.wbl.weather.ui.activity;
 
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -11,7 +12,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import com.google.android.material.navigation.NavigationBarView;
 import com.wbl.weather.R;
 import com.wbl.weather.databinding.ActivityMainBinding;
 
@@ -37,12 +40,12 @@ public class MainActivity extends BaseActivity {
         //返回数据时更新ViewModel，ViewModel更新则xml更新
         mainViewModel.biying.observe(this, biYingImgResponse -> dataBinding.setViewmodel(mainViewModel));
         //基于个人隐私保护的关系，这里要设置为true，否则会出现地图白屏的情况
-        dataBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+       /* dataBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 initView();
             }
-        });
+        });*/
 
         requestLocation();
         initView();
@@ -56,8 +59,22 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         //获取navController
         NavController navController = Navigation.findNavController(this,R.id.nav_weather_fragment);
-        navController.navigate(R.id.weather_fragment);
-        dataBinding.swipeRefreshLayout.setRefreshing(false);
+        dataBinding.bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.weather_fragment:
+                        navController.navigate(R.id.weather_fragment);
+                        break;
+                    case R.id.home_fragment:
+                        navController.navigate(R.id.home_fragment);
+                        break;
+                }
+                return true;
+            }
+        });
+
+       // dataBinding.swipeRefreshLayout.setRefreshing(false);
     }
 
 

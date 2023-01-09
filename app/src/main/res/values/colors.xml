@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="qtransluncent">#00000000</color>
+    <color name="danlan">#4DCAF5FF</color>
     <color name="translucent">#90000000</color>
     <color name="gray">#878789</color>
     <color name="gray_white">#F8F8F8</color><!--灰白-->

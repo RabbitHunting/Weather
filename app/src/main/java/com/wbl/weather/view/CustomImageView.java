@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.wbl.weather.BaseApplication;
+import com.wbl.weather.R;
 import com.wbl.weather.network.utils.KLog;
 
 import io.reactivex.annotations.Nullable;
@@ -45,5 +46,17 @@ public class CustomImageView extends AppCompatImageView {
     @BindingAdapter(value = {"networkUrl"}, requireAll = false)
     public static void setNetworkUrl(ImageView imageView, String url) {
         Glide.with(BaseApplication.getContext()).load(url).into(imageView);
+    }
+
+    private static final RequestOptions OPTIONS_LOCAL = new RequestOptions()
+            .placeholder(R.drawable.logo)//图片加载出来前，显示的图片
+            .fallback(R.drawable.logo) //url为空的时候,显示的图片
+            .error(R.mipmap.ic_loading_failed)//图片加载失败后，显示的图片
+            .diskCacheStrategy(DiskCacheStrategy.NONE)//不做磁盘缓存
+            .skipMemoryCache(true);
+
+    @BindingAdapter(value = {"localUrl"}, requireAll = false)
+    public static void setLocalUrl(ImageView imageView, String url) {
+        Glide.with(BaseApplication.getContext()).load(url).apply(OPTIONS_LOCAL).into(imageView);
     }
 }

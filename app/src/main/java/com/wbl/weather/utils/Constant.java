@@ -10,4 +10,9 @@ public class Constant {
      * 今日是否请求了接口
      */
     public static final String IS_TODAY_REQUEST = "isTodayRequest";
+
+    /**
+     * 是否登录
+     */
+    public static final String is_Login = "isfalse";
 }

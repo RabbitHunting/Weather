@@ -26,6 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/qtransluncent">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
 
         <!-- 主页面 -->
         <RelativeLayout
@@ -41,7 +48,7 @@
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/appbar_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/qtransluncent"
                     android:fitsSystemWindows="true"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -79,7 +86,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@{weather.cityNowWeather.now.temp}"
-                                    android:textSize="60sp" />
+                                    android:textSize="40sp" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -172,6 +179,7 @@
                 </com.google.android.material.appbar.AppBarLayout>
                 <!--嵌套滑动布局-->
                 <androidx.core.widget.NestedScrollView
+                    android:id="@+id/hd"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fillViewport="true"
@@ -465,7 +473,7 @@
                     android:id="@+id/fab_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="30dp"
                     android:contentDescription="城市"
                     android:src="@mipmap/ic_city"
                     android:visibility="visible"
@@ -474,7 +482,7 @@
                     tools:ignore="UsingOnClickInXml" />
             </LinearLayout>
         </RelativeLayout>
-
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <!-- 抽屉页面 -->
         <LinearLayout
             android:id="@+id/lay"

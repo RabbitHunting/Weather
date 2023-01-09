@@ -23,3 +23,10 @@ utils 外部所用的工具包
 view 自定义控件
 
 viewmodels 数据和视图层的中间接口
+
+MVUtils :
+nicheng:用户昵称
+address:当前天气的地址
+dingwei:定位地址
+xuanze:选择的城市
+hourly：cityDail：live：都是链接地址
