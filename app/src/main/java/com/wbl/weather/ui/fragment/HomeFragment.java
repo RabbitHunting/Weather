@@ -86,6 +86,9 @@ public class HomeFragment extends BaseFragment {
         if (MVUtils.getBoolean(Constant.is_Login)) {
             String nicheng = MVUtils.getString("nicheng");
             binding.zt.setText(nicheng);
+            //用户已登录则跳转到用户信息列表
+
+
 
         } else {
             binding.zt.setText("未登录");
