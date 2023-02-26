@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
 }
 
+def STR_ALIAS = "ALIAS"
+def STR_PWD = "PASSWORD_STORE"
+def STR_FILE = "FILE_KEYSTORE"
+def STR_FILE_PWD = "PASSWORD_KEY"
+Properties properties = new Properties()
+properties.load(new FileInputStream(file("keyStore/stores.properties")))
+
 android {
     compileSdk 32
 
@@ -15,8 +22,22 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs{
+        weather{
+            keyAlias properties[STR_ALIAS]
+            keyPassword properties[STR_PWD]
+            storeFile file(properties[STR_FILE])
+            storePassword properties[STR_FILE_PWD]
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.weather
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.weather
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

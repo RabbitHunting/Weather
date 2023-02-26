@@ -7,6 +7,8 @@ import com.wbl.weather.model.CityHourlyWeather;
 import com.wbl.weather.model.CityIdResponse;
 import com.wbl.weather.model.CityLiveResponse;
 import com.wbl.weather.model.CityNowWeather;
+import com.wbl.weather.model.NewsDetailResponse;
+import com.wbl.weather.model.NewsResponse;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -24,6 +26,9 @@ public interface ApiService {
     @GET("/HPImageArchive.aspx?format=js&idx=0&n=1")
     Observable<BiYingResponse> biying();
 
+    /**
+     * 天气数据
+     */
     @GET("/v2/city/lookup?key=922cb910930843a8b60d5588e9cf8182")
     Observable<CityIdResponse> cityid(@Query("location") String name);
 
@@ -41,6 +46,17 @@ public interface ApiService {
 
     @GET("/v7/indices/1d?type=1,2,3,6,8,16&key=922cb910930843a8b60d5588e9cf8182")
     Observable<CityLiveResponse> cityLiveWeather(@Query("location") String id);
+
+    /**
+     * 新闻数据
+     */
+    @GET("/toutiao/index?type=&page=&page_size=&is_filter=&key=72556cae846101cbd61f7b0750c0bdb1")
+    Observable<NewsResponse> news();
+    /**
+     * 聚合新闻数据详情
+     */
+    @GET("/toutiao/content?key=72556cae846101cbd61f7b0750c0bdb1")
+    Observable<NewsDetailResponse> newsDetail(@Query("uniquekey") String uniquekey);
 
 
 }

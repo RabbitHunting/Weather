@@ -167,6 +167,10 @@ public class NetworkApi {
                 //天气数据
                 BASE_URL="https://api.qweather.com";
                 break;
+            case 3:
+                //新闻数据
+                BASE_URL="http://v.juhe.cn";
+                break;
             default:break;
         }
     }

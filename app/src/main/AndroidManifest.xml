@@ -34,6 +34,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Weather">
         <activity
+            android:name=".ui.activity.WebActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.UserActivity"
             android:exported="false" />
         <activity

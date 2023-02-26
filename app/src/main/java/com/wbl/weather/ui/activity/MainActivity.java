@@ -66,8 +66,8 @@ public class MainActivity extends BaseActivity {
                     case R.id.weather_fragment:
                         navController.navigate(R.id.weather_fragment);
                         break;
-                    case R.id.home_fragment:
-                        navController.navigate(R.id.home_fragment);
+                    case R.id.new_fragment:
+                        navController.navigate(R.id.new_fragment);
                         break;
                 }
                 return true;

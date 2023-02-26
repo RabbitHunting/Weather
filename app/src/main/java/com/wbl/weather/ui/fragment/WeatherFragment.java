@@ -152,17 +152,18 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     private void initView() {
         binding.hourly.setVisibility(View.GONE);
         initweather();
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initView();
+            }
+        });
         binding.hd.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
                 if (i1 == 0) {
                     Log.i(TAG, "onScrollChange: 顶部");
-                    binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                        @Override
-                        public void onRefresh() {
-                            initView();
-                        }
-                    });
+
                 }
             }
         });
