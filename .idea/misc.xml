@@ -14,6 +14,7 @@
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/shape_translucent_radius_24.xml" value="0.1665" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/shape_translucent_radius_6.xml" value="0.152" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/shapr_radius_12.xml" value="0.1" />
+        <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/weather_yuyin_up_24.xml" value="0.1" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/drawable/white_borde.xml" value="0.152" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/activity_login.xml" value="0.24114583333333334" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/activity_main.xml" value="0.176" />
@@ -29,7 +30,7 @@
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_news.xml" value="0.12760416666666666" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/item_now.xml" value="0.23743589743589744" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/news_fragment.xml" value="0.264" />
-        <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/weather_fragment.xml" value="0.1" />
+        <entry key="..\:/Androidwork/Weather/app/src/main/res/layout/weather_fragment.xml" value="0.72" />
         <entry key="..\:/Androidwork/Weather/app/src/main/res/menu/navigation_menu.xml" value="0.1" />
       </map>
     </option>

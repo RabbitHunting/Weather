@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.iflytek.cloud.SpeechUtility;
 import com.tencent.mmkv.MMKV;
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
@@ -12,7 +13,7 @@ import com.wbl.weather.db.AppDatabase;
 import com.wbl.weather.network.NetworkApi;
 import com.wbl.weather.ui.activity.ActivityManager;
 import com.wbl.weather.utils.MVUtils;
-
+import com.iflytek.cloud.SpeechConstant;
 import java.util.HashMap;
 
 /**
@@ -41,6 +42,8 @@ public class BaseApplication extends Application {
         db = AppDatabase.getInstance(this);
         //腾讯WebView初始化
         initX5WebView();
+        //语音初始化
+        SpeechUtility.createUtility(BaseApplication.this, SpeechConstant.APPID +"=d8f7fb4f");
 
     }
 

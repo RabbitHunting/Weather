@@ -1,6 +1,6 @@
 package com.wbl.weather.ui.fragment;
 
-import androidx.annotation.ColorInt;
+
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -16,10 +16,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.MemoryFile;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -32,6 +41,15 @@ import com.amap.api.services.district.DistrictResult;
 import com.amap.api.services.district.DistrictSearch;
 import com.amap.api.services.district.DistrictSearchQuery;
 import com.google.android.material.appbar.AppBarLayout;
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechEvent;
+import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SynthesizerListener;
+import com.iflytek.cloud.msc.util.FileUtil;
+import com.iflytek.cloud.msc.util.log.DebugLog;
 import com.wbl.weather.R;
 import com.wbl.weather.databinding.ItemHourlyBinding;
 import com.wbl.weather.databinding.WeatherFragmentBinding;
@@ -45,12 +63,15 @@ import com.wbl.weather.ui.adapter.CityHourlyAdapter;
 import com.wbl.weather.ui.adapter.CityLiveAdapter;
 import com.wbl.weather.utils.JudgmentWeather;
 import com.wbl.weather.utils.MVUtils;
+import com.wbl.weather.utils.YuYinUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
-public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDistrictSearchListener, AMapLocationListener {
+public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDistrictSearchListener, AMapLocationListener
+        , Spinner.OnItemSelectedListener {
 
     private WeatherFragmentBinding binding;
     private WeatherViewModel mViewModel;
@@ -69,6 +90,42 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     //行政区数组
     private final String[] districtArray = new String[5];
 
+    private static boolean IS_YUYIN = false;
+    private String YuyinText;
+
+
+    // 语音合成对象
+    private SpeechSynthesizer mTts;
+
+    // 默认发音人
+    private String voicer = "xiaoyan";
+
+    // 引擎类型
+    private String mEngineType = SpeechConstant.TYPE_CLOUD;
+
+
+    private Vector<byte[]> container = new Vector<>();
+
+    //内存文件
+    MemoryFile memoryFile;
+    //总大小
+    public volatile long mTotalSize = 0;
+
+    //发音人名称
+    private static final String[] arrayName = {"讯飞小燕", "讯飞许久", "讯飞小萍", "讯飞小婧", "讯飞许小宝"};
+
+    //发音人值
+    private static final String[] arrayValue = {"xiaoyan", "aisjiuxu", "aisxping", "aisjinger", "aisbabyxu"};
+
+    //数组适配器
+    private ArrayAdapter<String> arrayAdapter;
+
+    //语速
+    private String speedValue = "50";
+    //音调
+    private String pitchValue = "50";
+    //音量
+    private String volumeValue = "50";
 
     public static WeatherFragment newInstance() {
         return new WeatherFragment();
@@ -85,6 +142,8 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
+        // 初始化合成对象
+        mTts = SpeechSynthesizer.createSynthesizer(requireActivity(), mTtsInitListener);
         //点击显示城市菜单
         binding.fabCity.setOnClickListener(v -> binding.drawerLayout.openDrawer(GravityCompat.END));
         //抽屉菜单监听
@@ -123,12 +182,10 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(requireActivity(), SourceActivity.class);
-                intent.putExtra("Url","https://www.qweather.com");
+                intent.putExtra("Url", "https://www.qweather.com");
                 view.getContext().startActivity(intent);
             }
         });
-
-
 
 
         //初始化操作
@@ -201,8 +258,73 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             }
         });
 
+        //将可选内容与ArrayAdapter连接起来
+        arrayAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, arrayName);
+        //设置下拉列表的风格
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //将adapter 添加到spinner中
+        binding.spinner.setAdapter(arrayAdapter);
+        //添加事件Spinner事件监听
+        binding.spinner.setOnItemSelectedListener(this);
+
+        setSeekBar(binding.sbSpeed, 1);
+        setSeekBar(binding.sbPitch, 2);
+        setSeekBar(binding.sbVolume, 3);
+        binding.weatherYuyinBtn.setOnClickListener(view -> {
+            if (mTts == null) {
+                this.showTip("创建对象失败，请确认 libmsc.so 放置正确，且有调用 createUtility 进行初始化");
+                return;
+            }
+            if (!IS_YUYIN) {
+                IS_YUYIN = true;
+                //输入文本
+                YuYinUtils yuYinUtils = new YuYinUtils();
+                String etStr = yuYinUtils.yuyin();
+                if (!etStr.isEmpty()) {
+                    YuyinText = etStr;
+                }
+                //设置参数
+                setParam();
+                //开始合成播放
+                int code = mTts.startSpeaking(YuyinText, mTtsListener);
+                if (code != ErrorCode.SUCCESS) {
+                    showTip("语音合成失败,错误码: " + code);
+                }
+            } else {
+                IS_YUYIN = false;
+                mTts.pauseSpeaking();
+            }
+        });
+
+    }
 
 
+    //设置SeekBar
+    private void setSeekBar(SeekBar seekBar, final int type) {
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                switch (type) {
+                    case 1://设置语速 范围 1~100
+                        speedValue = Integer.toString(progress);
+                        break;
+                    case 2://设置音调  范围 1~100
+                        pitchValue = Integer.toString(progress);
+                        break;
+                    case 3://设置音量  范围 1~100
+                        volumeValue = Integer.toString(progress);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
     }
     /**
      * 开始刷新天气
@@ -346,7 +468,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     }
 
     /**
-     * 城市名转城市代码
+     * 天气信息
      */
     public void CityCode(String cityName) {
         String name = cityName;
@@ -360,23 +482,29 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             binding.setWeather(mViewModel);
             int id = JudgmentWeather.backid(cityNowWeather.getNow().getIcon());
             binding.weatherFragment.setBackgroundResource(id);
+            String text = name + "现在的天气" + cityNowWeather.getNow().getText() + "室外温度" + cityNowWeather.getNow().getTemp()
+                    + "体感温度" + cityNowWeather.getNow().getFeelsLike() + "风向" + cityNowWeather.getNow().getWindDir()
+                    + "风力" + cityNowWeather.getNow().getWindScale();
+            MVUtils.put("cityNowY", text);
 
         });
-        mViewModel.airResponse.observe(requireActivity(),cityAirResponse ->{
+        mViewModel.airResponse.observe(requireActivity(), cityAirResponse -> {
             binding.setAirweather(mViewModel);
+            String text = "空气质量" + cityAirResponse.getNow().getCategory() + "空气中的污染物主要是" + cityAirResponse.getNow().getPrimary();
+            MVUtils.put("cityNowA", text);
             binding.air.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(requireActivity(), SourceActivity.class);
-                    intent.putExtra("Url",cityAirResponse.getFxLink());
+                    intent.putExtra("Url", cityAirResponse.getFxLink());
                     requireActivity().startActivity(intent);
                 }
             });
         });
-        String time = "更新于："+ DateUtil.getDateTime();
+        String time = "更新于：" + DateUtil.getDateTime();
         binding.timeRe.setText(time);
-        mViewModel.cityHourlyWeather.observe(requireActivity(),cityHourlyWeather1 -> {
-            MVUtils.put("hourly",cityHourlyWeather1.getFxLink());
+        mViewModel.cityHourlyWeather.observe(requireActivity(), cityHourlyWeather1 -> {
+            MVUtils.put("hourly", cityHourlyWeather1.getFxLink());
             CityHourlyAdapter cityHourlyAdapter = new CityHourlyAdapter(cityHourlyWeather1.getHourly());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -385,15 +513,15 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
             binding.hourly.setVisibility(View.VISIBLE);
         });
 
-        mViewModel.cityDailyResponse.observe(requireActivity(),cityDailyResponse -> {
-            MVUtils.put("cityDail",cityDailyResponse.getFxLink());
+        mViewModel.cityDailyResponse.observe(requireActivity(), cityDailyResponse -> {
+            MVUtils.put("cityDail", cityDailyResponse.getFxLink());
             CityDailyAdapter cityDailyAdapter = new CityDailyAdapter(cityDailyResponse.getDaily());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             binding.dailyWeather.setLayoutManager(layoutManager);
             binding.dailyWeather.setAdapter(cityDailyAdapter);
         });
-        mViewModel.liveResponse.observe(requireActivity(),cityLiveResponse -> {
-            MVUtils.put("live",cityLiveResponse.getFxLink());
+        mViewModel.liveResponse.observe(requireActivity(), cityLiveResponse -> {
+            MVUtils.put("live", cityLiveResponse.getFxLink());
             CityLiveAdapter cityLiveAdapter = new CityLiveAdapter(cityLiveResponse.getDaily());
             LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity());
             binding.liveIndices.setLayoutManager(layoutManager);
@@ -437,7 +565,171 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
     }
 
 
+    /**
+     * 初始化监听。
+     */
+    private InitListener mTtsInitListener = new InitListener() {
+        @Override
+        public void onInit(int code) {
+            Log.i(TAG, "InitListener init() code = " + code);
+            if (code != ErrorCode.SUCCESS) {
+                showTip("初始化失败,错误码：" + code);
+            } else {
+                showTip("初始化成功");
 
+            }
+        }
+    };
+
+    /**
+     * Toast提示
+     *
+     * @param msg
+     */
+    private void showTip(String msg) {
+        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 参数设置
+     *
+     * @return
+     */
+    private void setParam() {
+        // 清空参数
+        mTts.setParameter(SpeechConstant.PARAMS, null);
+        // 根据合成引擎设置相应参数
+        if (mEngineType.equals(SpeechConstant.TYPE_CLOUD)) {
+            mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
+            //支持实时音频返回，仅在synthesizeToUri条件下支持
+            mTts.setParameter(SpeechConstant.TTS_DATA_NOTIFY, "1");
+            // 设置在线合成发音人
+            mTts.setParameter(SpeechConstant.VOICE_NAME, voicer);
+
+            //设置合成语速
+            mTts.setParameter(SpeechConstant.SPEED, speedValue);
+            //设置合成音调
+            mTts.setParameter(SpeechConstant.PITCH, pitchValue);
+            //设置合成音量
+            mTts.setParameter(SpeechConstant.VOLUME, volumeValue);
+        } else {
+            mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_LOCAL);
+            mTts.setParameter(SpeechConstant.VOICE_NAME, "");
+        }
+        // 设置播放合成音频打断音乐播放，默认为true
+        mTts.setParameter(SpeechConstant.KEY_REQUEST_FOCUS, "false");
+        // 设置音频保存路径，保存音频格式支持pcm、wav
+        mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "pcm");
+        mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, requireActivity().getExternalFilesDir(null) + "/msc/tts.pcm");
+    }
+
+    /**
+     * 合成回调监听。
+     */
+    private SynthesizerListener mTtsListener = new SynthesizerListener() {
+        //开始播放
+        @Override
+        public void onSpeakBegin() {
+            Log.i(TAG, "开始播放");
+        }
+
+        //暂停播放
+        @Override
+        public void onSpeakPaused() {
+            Log.i(TAG, "暂停播放");
+        }
+
+        //继续播放
+        @Override
+        public void onSpeakResumed() {
+            Log.i(TAG, "继续播放");
+        }
+
+        //合成进度
+        @Override
+        public void onBufferProgress(int percent, int beginPos, int endPos, String info) {
+            Log.i(TAG, "合成进度：" + percent + "%");
+        }
+
+        //播放进度
+        @Override
+        public void onSpeakProgress(int percent, int beginPos, int endPos) {
+            // 播放进度
+            Log.i(TAG, "播放进度：" + percent + "%");
+            SpannableStringBuilder style = new SpannableStringBuilder(YuyinText);
+            style.setSpan(new BackgroundColorSpan(Color.RED), beginPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        }
+
+        //播放完成
+        @Override
+        public void onCompleted(SpeechError error) {
+            if (error == null) {
+                Log.i(TAG, "播放完成," + container.size());
+                DebugLog.LogD("播放完成," + container.size());
+                for (int i = 0; i < container.size(); i++) {
+                    //写入文件
+                    writeToFile(container.get(i));
+                }
+                //保存文件
+                FileUtil.saveFile(memoryFile, mTotalSize, requireActivity().getExternalFilesDir(null) + "/1.pcm");
+            } else {
+                //异常信息
+                showTip(error.getPlainDescription(true));
+            }
+        }
+
+        //事件
+        @Override
+        public void onEvent(int eventType, int arg1, int arg2, Bundle obj) {
+            //	 以下代码用于获取与云端的会话id，当业务出错时将会话id提供给技术支持人员，可用于查询会话日志，定位出错原因
+            //	 若使用本地能力，会话id为null
+            if (SpeechEvent.EVENT_SESSION_ID == eventType) {
+                String sid = obj.getString(SpeechEvent.KEY_EVENT_SESSION_ID);
+                Log.i(TAG, "session id =" + sid);
+            }
+
+            //当设置SpeechConstant.TTS_DATA_NOTIFY为1时，抛出buf数据
+            if (SpeechEvent.EVENT_TTS_BUFFER == eventType) {
+                byte[] buf = obj.getByteArray(SpeechEvent.KEY_EVENT_TTS_BUFFER);
+                Log.i(TAG, "bufis =" + buf.length);
+                container.add(buf);
+            }
+        }
+    };
+
+    /**
+     * 写入文件
+     */
+    private void writeToFile(byte[] data) {
+        if (data == null || data.length == 0) {
+            return;
+        }
+        try {
+            if (memoryFile == null) {
+                Log.i(TAG, "memoryFile is null");
+                String mFilepath = requireActivity().getExternalFilesDir(null) + "/1.pcm";
+                memoryFile = new MemoryFile(mFilepath, 1920000);
+                memoryFile.allowPurging(false);
+            }
+            memoryFile.writeBytes(data, 0, (int) mTotalSize, data.length);
+            mTotalSize += data.length;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 选中
+     */
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        voicer = arrayValue[position];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
 
 
 }

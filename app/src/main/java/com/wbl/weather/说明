@@ -30,3 +30,5 @@ address:当前天气的地址
 dingwei:定位地址
 xuanze:选择的城市
 hourly：cityDail：live：都是链接地址
+cityNowY 语音现在的天气
+cityNowA 语音现在的空气质量
