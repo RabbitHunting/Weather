@@ -63,6 +63,7 @@ import com.wbl.weather.ui.adapter.CityHourlyAdapter;
 import com.wbl.weather.ui.adapter.CityLiveAdapter;
 import com.wbl.weather.utils.JudgmentWeather;
 import com.wbl.weather.utils.MVUtils;
+import com.wbl.weather.utils.PermissionUtils;
 import com.wbl.weather.utils.YuYinUtils;
 import com.wbl.weather.viewmodels.WeatherViewModel;
 
@@ -173,6 +174,7 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         binding.dwCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                requestLocation();
                 //开启定位
                 mLocationClient.startLocation();
 
@@ -195,6 +197,19 @@ public class WeatherFragment extends BaseFragment implements DistrictSearch.OnDi
         //搜索行政区
         districtArray[index] = "中国";
         districtSearch(districtArray[index]);
+    }
+
+    /**
+     * 定位请求权限
+     */
+    private void requestLocation() {
+        if (isAndroid6()) {
+            if (!hasPermission(PermissionUtils.LOCATION)) {
+                requestPermission(PermissionUtils.LOCATION);
+            }
+        } else {
+            showMsg("您无需动态请求权限");
+        }
     }
 
     @Override

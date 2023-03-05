@@ -26,15 +26,7 @@ import com.wbl.weather.utils.PermissionUtils;
 
 public class BaseActivity extends AppCompatActivity {
     protected AppCompatActivity context;
-    /**
-     * 打开相册请求码
-     */
-    protected static final int SELECT_PHOTO_CODE = 2000;
 
-    /**
-     * 打开相机请求码
-     */
-    protected static final int TAKE_PHOTO_CODE = 2001;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
